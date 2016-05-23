@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+<h:body>
+    <h:form>
+        <p:growl widgetVar="growl" showDetail="true" />
+        <p:panel id="panel" header="Web Page Image Crawler">
+
+            <p:socket onMessage="handleMessage" channel="/notify"  />
+            <p:messages id="msgs" for="msgs" />
+
+            <h:panelGrid columns="3" cellpadding="5">
+                <p:outputLabel for="url" value="Enter Url:" />
+                <p:inputText id="url" value="#{imageCrawl.url}" required="true" label="Url here..." >
+                    <f:validateLength minimum="20" />
+                    <f:validator validatorId="com.imagecrawler.utils.FUrlValidator" />
+                </p:inputText>
+                <p:message for="url" display="icon" />
+
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="4" cellpadding="5">
+                <p:progressBar widgetVar="pbAjax" value="#{imageProgress.progress}" ajax="true" labelTemplate="{value}%" styleClass="animated">
+
+                </p:progressBar>
+
+            </h:panelGrid>
+
+            <p:commandButton value="Submit" async="true" update="panel" actionListener="#{imageCrawl.start}" icon="ui-icon-check" />
+        </p:panel>
+    </h:form>
+
+    <script type="text/javascript">
+        function handleMessage(facesmessage) {
+            facesmessage.severity = 'info';
+            PF('growl').show([facesmessage]);
+        }
+    </script>
+</h:body>
+</html>
